@@ -1,20 +1,85 @@
-# Проектная работа 7 спринта
+# Проектная работа 6 спринта
 
-Упростите регистрацию и аутентификацию пользователей в Auth-сервисе, добавив вход через социальные сервисы. Список сервисов выбирайте исходя из целевой аудитории онлайн-кинотеатра — подумайте, какими социальными сервисами они пользуются. Например, использовать [OAuth от Github](https://docs.github.com/en/free-pro-team@latest/developers/apps/authorizing-oauth-apps){target="_blank"} — не самая удачная идея. Ваши пользователи не разработчики и вряд ли имеют аккаунт на Github. А вот добавить Twitter, Facebook, VK, Google, Yandex или Mail будет хорошей идеей.
+Командная работа https://github.com/AnnaKPolyakova/Auth_sprint_1
 
-Вам не нужно делать фронтенд в этой задаче и реализовывать собственный сервер OAuth. Нужно реализовать протокол со стороны потребителя.
 
-Информация по OAuth у разных поставщиков данных: 
+Создает индексы person, genre и заполняет данными из бд postgres
+(запуск через db_updater.py в отдельном контейнере)
+Апи для получения данных из es о фильмах, персонах, жанрах  
 
-- [Twitter](https://developer.twitter.com/en/docs/authentication/overview){target="_blank"},
-- [Facebook](https://developers.facebook.com/docs/facebook-login/){target="_blank"},
-- [VK](https://vk.com/dev/access_token){target="_blank"},
-- [Google](https://developers.google.com/identity/protocols/oauth2){target="_blank"},
-- [Yandex](https://yandex.ru/dev/oauth/?turbo=true){target="_blank"},
-- [Mail](https://api.mail.ru/docs/guides/oauth/){target="_blank"}.
+Технологии и требования:
+```
+Python 3.9+
+Flask
+```
 
-## Дополнительное задание
+### Настройки Docker
 
-Реализуйте возможность открепить аккаунт в соцсети от личного кабинета. 
+##### Установка
 
-Решение залейте в репозиторий текущего спринта и отправьте на ревью.
+* [Подробное руководство по установке](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
+### Настройки Docker-compose
+
+##### Установка
+
+* [Подробное руководство по установке](https://docs.docker.com/compose/install/)
+
+### Запуск приложения
+
+#### Перед запуском проекта создаем переменные окружения
+Создаем в корне .env и добавляем в него необходимые переменные  
+Пример в .env.example - для запуска приложения/тестов целиком в docker  
+Пример в .env.example-local - для запуска приложения/тестов локально и 
+частично в docker
+
+#### Admin user
+После запуска приложения автоматический создается user c is_superuser = True  
+
+* `login: admin`  
+* `password: admin` 
+
+
+#### Запуск проекта полностью в контейнерах docker
+
+* `docker-compose up --build`
+
+Для остановки контейнера:  
+* `docker-compose down --rmi all --volumes`
+
+#### Запуск проекта частично в контейнерах docker (redis и elastic)
+
+* `docker-compose -f docker-compose-local.yml up --build`
+* `python -m flask_app.pywsgi`
+
+Документация по адресу:  
+http://127.0.0.1:5000/v1/doc/redoc/ or или  
+http://127.0.0.1:5000/v1/doc/swagger/  
+
+Для остановки контейнера:  
+* `docker-compose -f docker-compose-local.yml down --rmi all --volumes`
+
+
+### Тестирование  
+
+Создаем в папке tests/functional файл с названием .env_test и добавляем в него 
+необходимые переменные  
+Пример в .env_test.example - для запуска тестов целиком в docker  
+Пример в .env_test.example - local - для запуска тестов локально и 
+частично в docker
+
+
+#### Запуск тестов в контейнере docker  
+
+* `docker-compose -f tests/functional/docker-compose-test.yml up --build`
+
+Для остановки контейнера: 
+* `docker-compose -f tests/functional/docker-compose-test.yml down --rmi all`
+
+#### Запуск тестов частично в контейнере docker  
+
+* `docker-compose -f tests/functional/docker-compose-test-local.yml up --build`
+* `pytest tests/functional/src`
+
+Для остановки контейнера: 
+* `docker-compose -f tests/functional/docker-compose-test-local.yml down --rmi all`

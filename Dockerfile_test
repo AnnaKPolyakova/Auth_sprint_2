@@ -1,0 +1,9 @@
+FROM python:3.9
+WORKDIR /tests_app
+COPY /tests/functional/requirements_for_test.txt /
+RUN pip3 install -r /requirements_for_test.txt
+COPY . .
+COPY /.env /.env
+#COPY /tests/functional/.env_test /.env_test
+
+ENV PYTHONPATH "${PYTHONPATH}:/"
