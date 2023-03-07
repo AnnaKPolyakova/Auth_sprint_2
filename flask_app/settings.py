@@ -23,6 +23,11 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     JWT_SECRET_KEY: str
     PAGE_SIZE: int
+    CLIENT_ID_YANDEX: str
+    SECRET_YANDEX: str
+    AUTH_URL_YANDEX: str
+    TOKEN_URL_YANDEX: str
+    USER_INFO_URL_YANDEX: str
 
     class Config:
         env_file = os.path.join(BASE_DIR, ".env")

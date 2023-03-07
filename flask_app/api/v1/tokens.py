@@ -14,7 +14,7 @@ from flask_app.api.v1.models.user import (
 from flask_app.api.v1.utils.history import HistoryCreator
 from flask_app.api.v1.utils.other import doc
 from flask_app.api.v1.utils.token import get_access_tokens, get_tokens_for_user
-from flask_app.db import db, jwt_redis_blocklist
+from flask_app.db import db, redis_db
 from flask_app.db_models import LoginHistory
 from flask_app.db_models import User as Users_db_model
 
@@ -82,7 +82,7 @@ def logout():
     logging.debug(f"TokenAPI {logout.__name__} start")
     token = get_jwt()
     jti = token["jti"]
-    jwt_redis_blocklist.set(
+    redis_db.set(
         jti, "", ex=current_app.config["JWT_ACCESS_TOKEN_EXPIRES"]
     )
     logging.debug(f"TokenAPI {logout.__name__} end")

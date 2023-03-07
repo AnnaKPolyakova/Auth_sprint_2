@@ -5,7 +5,7 @@ from flask_app.settings import settings
 
 db = SQLAlchemy()
 
-jwt_redis_blocklist = redis.StrictRedis(
+redis_db = redis.StrictRedis(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     db=0,

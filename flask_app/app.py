@@ -7,6 +7,7 @@ from pydantic import BaseSettings
 from flask_app.api.v1.permission import permissions
 from flask_app.api.v1.role_permission import role_permissions
 from flask_app.api.v1.roles import roles
+from flask_app.api.v1.social_auth import social_login, social_complete
 from flask_app.api.v1.tokens import tokens
 from flask_app.api.v1.user_roles import user_roles
 from flask_app.api.v1.users import users
@@ -40,6 +41,12 @@ def create_app(settings: BaseSettings = settings):
     current_app.register_blueprint(users, url_prefix="/api/v1/users")
     current_app.register_blueprint(tokens, url_prefix="/api/v1/tokens")
     current_app.register_blueprint(roles, url_prefix="/api/v1/roles")
+    current_app.register_blueprint(
+        social_login, url_prefix="/api/v1/social/login"
+    )
+    current_app.register_blueprint(
+        social_complete, url_prefix="/api/v1/social/complete"
+    )
     current_app.register_blueprint(
         user_roles, url_prefix="/api/v1/users/<path:user_id>/roles"
     )

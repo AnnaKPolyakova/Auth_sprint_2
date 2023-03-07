@@ -18,3 +18,7 @@ def init_db(app: Flask, settings: BaseSettings):
     app.app_context().push()
     db.create_all()
     return db
+
+
+def init_redis():
+    pass
