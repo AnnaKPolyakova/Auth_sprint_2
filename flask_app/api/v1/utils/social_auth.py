@@ -135,7 +135,7 @@ class YandexAuthManager(AuthManager):
             User_db_model.email.in_(emails)
         ).first()
         if user is None:
-            user = self._create_user(data["login", None], emails[0])
+            user = self._create_user(data.get("login", None), emails[0])
         return user
 
     @staticmethod
