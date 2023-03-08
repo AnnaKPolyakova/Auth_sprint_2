@@ -46,7 +46,7 @@ def yandex_get_token(provider):
     manager_class = PROVIDERS_AND_MANAGERS.get(provider, None)
     if manager_class is None:
         return {"status": False}, HTTPStatus.BAD_REQUEST
-    code = request.args.get("code", default=-1, type=int)
+    code = request.args.get("code", default=-1)
     if code == -1:
         return {"status": False}, HTTPStatus.FORBIDDEN
     data = manager_class().get_tokens_for_user(code)

@@ -26,6 +26,7 @@ class AuthManager:
         self.full_auth_param = dict()
         self.full_token_data = dict()
         self.full_info_param = dict()
+        self.full_token_param = dict()
 
     def _set_full_auth_param(self):
         self.full_auth_param = self.AUTH_PARAMS
@@ -34,10 +35,9 @@ class AuthManager:
         ] = "http://127.0.0.1:5000" + self.REDIRECT_URI
         # ] = socket.gethostname() + self.REDIRECT_URI
 
-    def _set_full_user_info_param(self, token):
+    def _set_full_user_info_param(self, **kwargs):
         self.full_info_param = self.USER_INFO_PARAMS
-        jwt_secret = token
-        self.full_info_param["oauth_token"] = jwt_secret
+        self.full_info_param["oauth_token"] = kwargs.get("token")
 
     def _set_full_token_data(self, code):
         self.full_token_data = self.TOKEN_DATA
@@ -48,9 +48,9 @@ class AuthManager:
         return requests.get(self.AUTH_URL, params=self.full_auth_param).url
 
     @staticmethod
-    def _create_user(data, email):
+    def _create_user(login, email):
         user_data = {
-            "login": data["login"] + "_" + str(random.random()),
+            "login": login + "_" + str(random.random()),
             "email": email,
             "is_superuser": False,
             "password": str(random.random())
@@ -68,16 +68,19 @@ class AuthManager:
         )
         return response.json()
 
-    def _get_or_create_user(self, token):
+    def _get_or_create_user(self, data, token):
         pass
 
     @staticmethod
     def _save_access_token_to_redis(user, token, expired):
-        redis_db.set(
-            name=str(user.id),
-            value=token,
-            ex=expired
-        )
+        if expired:
+            redis_db.set(
+                name=str(user.id),
+                value=token,
+                ex=expired
+            )
+        else:
+            redis_db.set(name=str(user.id), value=token)
 
     @staticmethod
     def _get_token_from_data(data):
@@ -92,7 +95,7 @@ class AuthManager:
         token = self._get_token_from_data(data)
         if token is None:
             return dict()
-        user = self._get_or_create_user(token)
+        user = self._get_or_create_user(data, token)
         if user is None:
             return dict()
         expired = self._get_expired_from_data(data)
@@ -120,18 +123,19 @@ class YandexAuthManager(AuthManager):
         "format": "json"
     }
 
-    def _get_or_create_user(self, token):
-        self._set_full_user_info_param(token)
+    def _get_or_create_user(self, data, token):
+        id_user = data.get("user_id", None)
+        self._set_full_user_info_param(token=token, id_user=id_user)
         response = requests.get(
             self.USER_INFO_URI, params=self.full_info_param
         )
         data = response.json()
-        emails = data.get("emails", None)
+        emails = data.get("emails", [None])
         user = User_db_model.query.filter(
             User_db_model.email.in_(emails)
         ).first()
         if user is None:
-            user = self._create_user(data, emails[0])
+            user = self._create_user(data["login", None], emails[0])
         return user
 
     @staticmethod
@@ -143,6 +147,59 @@ class YandexAuthManager(AuthManager):
         return data.get("expires_in", None)
 
 
+class VKAuthManager(AuthManager):
+    TOKEN_URI = settings.TOKEN_URL_VK
+    REDIRECT_URI = "/api/v1/social/complete/vk/"
+    AUTH_URL = settings.AUTH_URL_VK
+    CLIENT_ID = settings.CLIENT_ID_VK
+    SECRET = settings.SECRET_VK
+    AUTH_PARAMS = {
+        "response_type": "code",
+        "client_id": CLIENT_ID,
+        "display": "popup",
+        "scope": "email"
+    }
+    TOKEN_PARAMS = {
+        "client_id": CLIENT_ID,
+        "client_secret": SECRET,
+        "fields": "email"
+    }
+    USER_INFO_PARAMS = {
+        "v": settings.VERSION_VK,
+        "fields": "email"
+    }
+
+    @staticmethod
+    def _get_token_from_data(data):
+        return data.get("access_token", None)
+
+    @staticmethod
+    def _get_expired_from_data(data):
+        return data.get("expires_in", None)
+
+    def _set_full_token_params(self, code):
+        self.full_token_params = self.TOKEN_PARAMS
+        self.full_token_params["code"] = code
+        self.full_token_params["redirect_uri"] =\
+            "http://127.0.0.1:5000" + self.REDIRECT_URI
+        # ] = socket.gethostname() + self.REDIRECT_URI
+
+    def _get_token_data(self, code):
+        self._set_full_token_params(code)
+        response = requests.post(
+            self.TOKEN_URI, data=self.full_token_params
+        )
+        return response.json()
+
+    def _get_or_create_user(self, data, token):
+        email = data.get("email", None)
+        user = User_db_model.query.filter_by(email=email).first()
+        if user is None:
+            user = self._create_user(email, email)
+        return user
+
+
 PROVIDERS_AND_MANAGERS = {
-    "yandex": YandexAuthManager
+    "yandex": YandexAuthManager,
+    "vk": VKAuthManager,
 }
