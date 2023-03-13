@@ -1,4 +1,5 @@
 import logging
+import time
 from http import HTTPStatus
 
 from flask import Blueprint, request
@@ -6,7 +7,7 @@ from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from spectree import Response
 
-from flask_app.api.v1.models.common import ResultBool, Status
+from flask_app.api.v1.models.common import ResultBool, Status, UserId
 from flask_app.api.v1.models.history import LoginHistory
 from flask_app.api.v1.models.permission import CheckPermission, Page
 from flask_app.api.v1.models.user import User, UserCreate, UserUpdate
@@ -178,6 +179,29 @@ def create_is_superuser():
         return {"status": info}, HTTPStatus.BAD_REQUEST
     logging.debug(f"UserDetailAPI {create_is_superuser.__name__} end")
     return info, HTTPStatus.CREATED
+
+
+@users.route("/auth_check/", methods=["GET"])
+@jwt_required(verify_type=False)
+@doc.validate(
+    tags=["user"],
+    resp=Response(
+        HTTP_200=(UserId, "Auth check passed"),
+    ),
+)
+def auth_check():
+    logging.debug("start auth_check")
+    user_id = get_jwt_identity()
+    return {"id": user_id}, HTTPStatus.OK
+
+
+@users.route("/wait/", methods=["POST"])
+@doc.validate(
+    tags=["user"],
+)
+def wait():
+    time.sleep(10)
+    return {}, HTTPStatus.CREATED
 
 
 users.add_url_rule("/", view_func=UserAPI.as_view("users"))

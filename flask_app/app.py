@@ -1,7 +1,9 @@
 from datetime import timedelta
+from logging.config import dictConfig
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from pydantic import BaseSettings
 
 from flask_app.api.v1.permission import permissions
@@ -15,7 +17,9 @@ from flask_app.api.v1.utils.other import doc
 from flask_app.db import db
 from flask_app.db_init import init_db
 from flask_app.db_models import User
+from flask_app.limits import init_limiter
 from flask_app.settings import settings
+from flask_app.tracer import configure_tracer
 
 
 def create_superuser(app):
@@ -31,7 +35,22 @@ def create_superuser(app):
 
 
 def create_app(settings: BaseSettings = settings):
-    current_app = Flask(__name__)
+    dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }},
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'
+        }},
+        'root': {
+            'level': 'DEBUG',
+            'handlers': ['wsgi']
+        }
+    })
+    current_app = Flask("auth_app")
 
     current_app.config["JWT_SECRET_KEY"] = settings.JWT_SECRET_KEY
     current_app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
@@ -58,10 +77,13 @@ def create_app(settings: BaseSettings = settings):
     )
     doc.register(current_app)
     create_superuser(current_app)
+    init_limiter(current_app)
     return current_app
 
 
 if __name__ == "__main__":
+    configure_tracer()
     app = create_app()
+    FlaskInstrumentor().instrument_app(app)
     jwt = JWTManager(app)
-    app.run()
+    app.run(host='0.0.0.0')

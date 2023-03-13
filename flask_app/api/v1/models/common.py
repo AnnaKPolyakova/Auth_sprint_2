@@ -1,3 +1,5 @@
+import uuid
+
 from pydantic import BaseModel
 
 
@@ -15,3 +17,7 @@ class Status(BaseModel):
 
 class ResultBool(BaseModel):
     result: bool
+
+
+class UserId(BaseModel):
+    id: uuid.UUID

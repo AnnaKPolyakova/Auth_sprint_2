@@ -13,3 +13,5 @@ docker
 /.pytest_cache/
 
 /.idea/
+.idea/
+/auth_proxy_app/storage/

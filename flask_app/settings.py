@@ -9,7 +9,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"), override=True)
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, "../.env"), override=True)
 
 
 class Settings(BaseSettings):
@@ -36,8 +36,12 @@ class Settings(BaseSettings):
     TOKEN_URL_VK: str
     VERSION_VK: str
 
+    AGENT_HOST_NAME: str
+    AGENT_PORT: int
+    DEFAULT_LIMITS: str
+
     class Config:
-        env_file = os.path.join(BASE_DIR, ".env")
+        env_file = os.path.join(BASE_DIR, "../.env")
         env_file_encoding = "utf-8"
 
 

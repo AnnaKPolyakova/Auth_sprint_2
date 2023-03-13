@@ -2,37 +2,23 @@ version: '3.8'
 
 services:
 
-  db:
-    image: postgres:12.4
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-      - ./db_sql_copy:/docker-entrypoint-initdb.d
-    env_file:
-      - .env
-    ports:
-      - ${POSTGRES_PORT}:5432
-    healthcheck:
-      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-      timeout: 2s
-      retries: 30
-    restart: always
-    networks:
-      - moves_network
-
   redis:
     image: redis
-    container_name: redis
+    container_name: redis_proxy
     restart: always
     env_file:
       - .env
     volumes:
     - ./storage/redis/data:/data
+    command: --port 6378
     ports:
-      - ${REDIS_PORT}:6379
+    - 6378:6378
+    expose:
+    - 6378
     networks:
       - moves_network
 
-  auth_app:
+  auth_proxy_app:
     build: .
     restart: always
     volumes:
@@ -40,18 +26,19 @@ services:
       - media_value:/code/media/
     env_file:
       - .env
-    command: gunicorn flask_app.wsgi_app:app --bind 0.0.0.0:8000 --reload
+    command: gunicorn auth_proxy_app.wsgi_app:app --bind 0.0.0.0:8001 --reload
     depends_on:
       - db
       - redis
     networks:
       - moves_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   nginx:
     image: nginx:1.19.3
-    container_name: nginx_auth
     ports:
-      - "80:80"
+      - "8001:8001"
 
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
@@ -60,22 +47,11 @@ services:
 
     depends_on:
       - auth_app
-      - db
       - redis
     networks:
       - moves_network
 
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    container_name: jaeger
-    ports:
-    - "6831:6831/udp"
-    - "16686:16686"
-    networks:
-      - moves_network
-
 volumes:
-  postgres_data:
   static_value:
   media_value:
 

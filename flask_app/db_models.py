@@ -1,6 +1,7 @@
+import logging
 import uuid
 
-from sqlalchemy import func
+from sqlalchemy import func, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import expression
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -112,7 +113,48 @@ class RolePermissionRelation(BaseID, BaseCreate, ToDictMixin):
         return f"<RolePermissionRelation {self.id}>"
 
 
-class LoginHistory(BaseID, BaseCreate, ToDictMixin):
+def create_login_history_partition(target, connection, **kw):
+    """ creating partition by login_history """
+    try:
+        logging.info("Create partitions")
+        connection.execute(
+            text("""CREATE TABLE IF NOT EXISTS public.login_history_2022 
+            PARTITION OF login_history FOR VALUES FROM 
+            ('2022-01-01') TO ('2022-12-31');""")
+        )
+        connection.execute(
+            text("""CREATE TABLE IF NOT EXISTS public.login_history_2023 
+            PARTITION OF login_history FOR VALUES FROM 
+            ('2023-01-01') TO ('2023-12-31');""")
+        )
+        logging.info("Finished creating partitions")
+    except Exception as error:
+        logging.info(
+            "Did nor created partitions. Error: {error}".format(error=error)
+        )
+
+
+class LoginHistory(db.Model, ToDictMixin):
+    __tablename__ = 'login_history'
+    __table_args__ = (
+        UniqueConstraint("id", "create_at"),
+        {
+            'postgresql_partition_by': 'RANGE (create_at)',
+            'listeners': [('after_create', create_login_history_partition)],
+        }
+    )
+    id = db.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        nullable=False,
+    )
+    create_at = db.Column(
+        db.DateTime,
+        primary_key=True,
+        default=func.now(),
+        nullable=False,
+    )
     user_id = db.Column(
         UUID(as_uuid=True),
         db.ForeignKey("user.id"),

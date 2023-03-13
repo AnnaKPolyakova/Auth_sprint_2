@@ -1,4 +1,3 @@
-import logging
 from http import HTTPStatus
 
 import flask
@@ -9,8 +8,7 @@ from flask_app.api.v1.models.common import Status
 from flask_app.api.v1.models.social_auth import SocialAuthCode
 from flask_app.api.v1.models.user import Tokens
 from flask_app.api.v1.utils.other import doc
-from flask_app.api.v1.utils.social_auth import YandexAuthManager, \
-    PROVIDERS_AND_MANAGERS
+from flask_app.api.v1.utils.social_auth import PROVIDERS_AND_MANAGERS
 
 social_login = Blueprint("social_login", __name__)
 social_complete = Blueprint("social_complete", __name__)
