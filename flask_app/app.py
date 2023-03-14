@@ -82,7 +82,8 @@ def create_app(settings: BaseSettings = settings):
 
 
 if __name__ == "__main__":
-    configure_tracer()
+    if settings.TRACER_ON:
+        configure_tracer()
     app = create_app()
     FlaskInstrumentor().instrument_app(app)
     jwt = JWTManager(app)

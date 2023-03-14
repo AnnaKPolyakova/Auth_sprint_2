@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     AGENT_HOST_NAME: str
     AGENT_PORT: int
     DEFAULT_LIMITS: str
+    TRACER_ON: int = 0
 
     class Config:
         env_file = os.path.join(BASE_DIR, "../.env")
