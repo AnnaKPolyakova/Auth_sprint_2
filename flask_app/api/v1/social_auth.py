@@ -27,7 +27,11 @@ def yandex_get_auth(provider):
     if manager_class is None:
         return {"status": False}, HTTPStatus.BAD_REQUEST
     manager = manager_class()
-    return flask.redirect(manager.get_redirect_uri(), code=302, Response=None)
+    return flask.redirect(
+        manager.get_redirect_uri(),
+        code=HTTPStatus.FOUND,
+        Response=None
+    )
 
 
 @social_complete.route("/<path:provider>/", methods=["GET"])
