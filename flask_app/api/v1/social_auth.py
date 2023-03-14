@@ -22,7 +22,7 @@ social_complete = Blueprint("social_complete", __name__)
         HTTP_400=(Status, "Error"),
     ),
 )
-def yandex_get_auth(provider):
+def get_auth(provider):
     manager_class = PROVIDERS_AND_MANAGERS.get(provider, None)
     if manager_class is None:
         return {"status": False}, HTTPStatus.BAD_REQUEST
@@ -44,7 +44,7 @@ def yandex_get_auth(provider):
         HTTP_403=(Status, "FORBIDDEN"),
     ),
 )
-def yandex_get_token(provider):
+def get_token(provider):
     manager_class = PROVIDERS_AND_MANAGERS.get(provider, None)
     if manager_class is None:
         return {"status": False}, HTTPStatus.BAD_REQUEST
