@@ -17,22 +17,9 @@ from flask_app.api.v1.utils.other import doc
 from flask_app.commands import create_is_superuser
 from flask_app.db import db
 from flask_app.db_init import init_db
-from flask_app.db_models import User
 from flask_app.init_limiter import init_limiter
 from flask_app.settings import settings
 from flask_app.tracer import configure_tracer
-
-
-def create_superuser(app):
-    admin = User(login="admin", is_superuser=True)
-    admin.set_password("admin")
-    app.logger.info("admin user was created")
-    try:
-        db.session.add(admin)
-        db.session.commit()
-    except Exception as error:
-        app.logger.info(error)
-        db.session.rollback()
 
 
 def create_app(settings: BaseSettings = settings):
@@ -78,7 +65,6 @@ def create_app(settings: BaseSettings = settings):
     )
     current_app.cli.add_command(create_is_superuser)
     doc.register(current_app)
-    create_superuser(current_app)
     init_limiter(current_app, settings)
     return current_app
 
