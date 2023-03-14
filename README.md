@@ -34,11 +34,14 @@ Flask
 частично в docker
 
 #### Admin user
-После запуска приложения автоматический создается user c is_superuser = True  
 
-* `login: admin`  
-* `password: admin` 
+Для создания is_superuser:  
 
+* `docker exec -it <id container> bash`
+* `cd flask_app/`
+* `flask is_superuser_create <login>`
+
+Будет создан суперюзер с одинаковыми логином и паролем 
 
 #### Запуск проекта полностью в контейнерах docker
 

@@ -14,6 +14,7 @@ from flask_app.api.v1.tokens import tokens
 from flask_app.api.v1.user_roles import user_roles
 from flask_app.api.v1.users import users
 from flask_app.api.v1.utils.other import doc
+from flask_app.commands import create_is_superuser
 from flask_app.db import db
 from flask_app.db_init import init_db
 from flask_app.db_models import User
@@ -75,6 +76,7 @@ def create_app(settings: BaseSettings = settings):
     current_app.register_blueprint(
         role_permissions, url_prefix="/api/v1/roles/<path:role_id>/permissions"
     )
+    current_app.cli.add_command(create_is_superuser)
     doc.register(current_app)
     create_superuser(current_app)
     init_limiter(current_app, settings)
