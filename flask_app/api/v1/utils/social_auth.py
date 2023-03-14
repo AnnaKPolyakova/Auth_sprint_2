@@ -55,9 +55,7 @@ class AuthManager:
         }
         creator = UserCreator(user_data, User, User_db_model, db)
         result, _ = creator.save()
-        if result is False:
-            return None
-        return creator.obj
+        return None if result is False else creator.obj
 
     def _get_token_data(self, code):
         self._set_full_token_data(code)
