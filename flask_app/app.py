@@ -17,7 +17,7 @@ from flask_app.api.v1.utils.other import doc
 from flask_app.db import db
 from flask_app.db_init import init_db
 from flask_app.db_models import User
-from flask_app.limits import init_limiter
+from flask_app.init_limiter import init_limiter
 from flask_app.settings import settings
 from flask_app.tracer import configure_tracer
 
@@ -77,7 +77,7 @@ def create_app(settings: BaseSettings = settings):
     )
     doc.register(current_app)
     create_superuser(current_app)
-    init_limiter(current_app)
+    init_limiter(current_app, settings)
     return current_app
 
 

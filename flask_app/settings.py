@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     AGENT_HOST_NAME: str
     AGENT_PORT: int
-    DEFAULT_LIMITS: str
+    DEFAULT_LIMITS: int
     TRACER_ON: int = 0
 
     class Config:
