@@ -35,6 +35,14 @@ Flask
 
 #### Admin user
 
+#### Запуск проекта полностью в контейнерах docker
+
+* `docker-compose up --build`
+
+Для остановки контейнера:  
+* `docker-compose down --rmi all --volumes`
+
+
 Для создания is_superuser:  
 
 * `docker exec -it <id container> bash`
@@ -43,12 +51,6 @@ Flask
 
 Будет создан суперюзер с одинаковыми логином и паролем 
 
-#### Запуск проекта полностью в контейнерах docker
-
-* `docker-compose up --build`
-
-Для остановки контейнера:  
-* `docker-compose down --rmi all --volumes`
 
 #### Запуск проекта частично в контейнерах docker (redis и elastic)
 
@@ -62,6 +64,11 @@ http://127.0.0.1:5000/v1/doc/swagger/
 Для остановки контейнера:  
 * `docker-compose -f docker-compose-local.yml down --rmi all --volumes`
 
+Для создания is_superuser:  
+
+* ` python -m flask is_superuser_create <login>`
+
+Будет создан суперюзер с одинаковыми логином и паролем 
 
 ### Тестирование  
 
