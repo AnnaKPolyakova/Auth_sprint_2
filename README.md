@@ -64,8 +64,9 @@ http://127.0.0.1:5000/v1/doc/swagger/
 Для остановки контейнера:  
 * `docker-compose -f docker-compose-local.yml down --rmi all --volumes`
 
-Для создания is_superuser:  
+Для создания is_superuser: 
 
+* ` cd flask_app/`
 * ` python -m flask is_superuser_create <login>`
 
 Будет создан суперюзер с одинаковыми логином и паролем 
