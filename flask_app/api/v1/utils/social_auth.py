@@ -32,7 +32,6 @@ class AuthManager:
         self.full_auth_param[
             "redirect_uri"
         ] = "http://127.0.0.1:5000" + self.REDIRECT_URI
-        # ] = socket.gethostname() + self.REDIRECT_URI
 
     def _set_full_user_info_param(self, **kwargs):
         self.full_info_param = self.USER_INFO_PARAMS
@@ -181,7 +180,6 @@ class VKAuthManager(AuthManager):
         self.full_token_params["code"] = code
         self.full_token_params["redirect_uri"] =\
             "http://127.0.0.1:5000" + self.REDIRECT_URI
-        # ] = socket.gethostname() + self.REDIRECT_URI
 
     def _get_token_data(self, code):
         self._set_full_token_params(code)
