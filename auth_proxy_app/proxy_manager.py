@@ -1,3 +1,5 @@
+import logging
+import json
 import uuid
 from http import HTTPStatus
 
@@ -24,8 +26,7 @@ URL_KEYS = [
 class ProxyManager:
 
     def __init__(self, request: flask_request):
-        from auth_proxy_app.wsgi_app import app
-        self.logging = app.logger
+        self.logging = self._get_logging()
         self.request = request
         self.token = request.headers.environ.get('HTTP_AUTHORIZATION', None)
         self.data = self._get_data(request)
@@ -52,6 +53,13 @@ class ProxyManager:
         method = self.data['method']
         del self.data['method']
         return method
+
+    def _get_logging(self):
+        try:
+            from auth_proxy_app.wsgi_app import app
+            return app.logger
+        except:
+            return logging
 
     def _get_db_key(self):
         url_list = self.url.split('/')
@@ -129,4 +137,4 @@ class ProxyManager:
         if response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
             self.logging.error("Internal_server_error")
             return {"status": False}, HTTPStatus.BAD_REQUEST
-        return response.text, response.status_code
+        return json.loads(response.text),response.status_code
