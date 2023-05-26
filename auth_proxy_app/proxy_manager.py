@@ -127,5 +127,6 @@ class ProxyManager:
             self._save_new_errors_count(key, counter)
             return {"status": False}, HTTPStatus.BAD_REQUEST
         if response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
+            self.logging.error("Internal_server_error")
             return {"status": False}, HTTPStatus.BAD_REQUEST
         return response.text, response.status_code

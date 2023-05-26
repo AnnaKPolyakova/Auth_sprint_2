@@ -101,6 +101,25 @@ class UserDetailAPI(MethodView):
         logging.debug(f"UserDetailAPI {self.patch.__name__} end")
         return info, HTTPStatus.OK
 
+    @doc.validate(
+        tags=["user"],
+        resp=Response(
+            HTTP_200=(User, "Get user"), HTTP_400=(Status, "Error")
+        ),
+    )
+    def get(self, user_id):
+        logging.debug(f"UserDetailAPI {self.get.__name__} start")
+        user = db.session.get(Users_db_model, user_id)
+        if user is None or str(user.id) != user_id:
+            logging.info(
+                f"UserAPI {self.patch.__name__} is not owner or not exist"
+            )
+            return {
+                       "status": "is not owner or not exist"
+                   }, HTTPStatus.BAD_REQUEST
+        logging.debug(f"UserDetailAPI {self.get.__name__} end")
+        return User(**user.to_dict()).dict(), HTTPStatus.OK
+
 
 @users.route("/login_history/", methods=["GET"])
 @jwt_required(verify_type=False)
