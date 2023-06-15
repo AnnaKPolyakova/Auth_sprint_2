@@ -1,5 +1,6 @@
 import logging
 import time
+import uuid
 from http import HTTPStatus
 
 from flask import Blueprint, request
@@ -109,14 +110,20 @@ class UserDetailAPI(MethodView):
     )
     def get(self, user_id):
         logging.debug(f"UserDetailAPI {self.get.__name__} start")
+        try:
+            uuid.UUID(user_id)
+        except Exception:
+            return {
+                "status": "user id invalid"
+            }, HTTPStatus.BAD_REQUEST
         user = db.session.get(Users_db_model, user_id)
         if user is None or str(user.id) != user_id:
             logging.info(
                 f"UserAPI {self.patch.__name__} is not owner or not exist"
             )
             return {
-                       "status": "is not owner or not exist"
-                   }, HTTPStatus.BAD_REQUEST
+                       "status": "not exist"
+                   }, HTTPStatus.NOT_FOUND
         logging.debug(f"UserDetailAPI {self.get.__name__} end")
         return User(**user.to_dict()).dict(), HTTPStatus.OK
 
