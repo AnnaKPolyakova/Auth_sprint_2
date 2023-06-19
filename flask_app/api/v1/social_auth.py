@@ -28,9 +28,7 @@ def get_auth(provider):
         return {"status": False}, HTTPStatus.BAD_REQUEST
     manager = manager_class()
     return flask.redirect(
-        manager.get_redirect_uri(),
-        code=HTTPStatus.FOUND,
-        Response=None
+        manager.get_redirect_uri(), code=HTTPStatus.FOUND, Response=None
     )
 
 

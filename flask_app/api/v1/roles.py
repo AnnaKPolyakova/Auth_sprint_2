@@ -104,6 +104,5 @@ class RoleDetailAPI(MethodView):
 
 roles.add_url_rule("/", view_func=RoleAPI.as_view("roles"))
 roles.add_url_rule(
-    "/<path:role_id>/",
-    view_func=RoleDetailAPI.as_view("roles_detail")
+    "/<path:role_id>/", view_func=RoleDetailAPI.as_view("roles_detail")
 )

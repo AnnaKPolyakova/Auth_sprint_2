@@ -32,10 +32,8 @@ class UserRolesAPI(MethodView):
         logging.debug(f"UserRolesAPI {self.get.__name__} start")
         user = db.session.get(User_db_model, user_id)
         if user is None:
-            logging.info(
-                f"UserRolesAPI {self.get.__name__} NOT_FOUND"
-            )
-            return '', HTTPStatus.NOT_FOUND
+            logging.info(f"UserRolesAPI {self.get.__name__} NOT_FOUND")
+            return "", HTTPStatus.NOT_FOUND
         roles = get_user_roles(user)
         logging.debug(f"UserRolesAPI {self.get.__name__} end")
         return [Role(**role.to_dict()).dict() for role in roles], HTTPStatus.OK
@@ -57,28 +55,26 @@ class UserRolesAPI(MethodView):
         role_id = request.get_json()["role_id"]
         role = db.session.get(Role_db_model, role_id)
         if role is None or user is None:
-            return '', HTTPStatus.NOT_FOUND
+            return "", HTTPStatus.NOT_FOUND
         if (
             UserRoleRelation_db_model.query.filter_by(
                 user_id=user_id, role_id=role_id
             ).count()
             > 0
         ):
-            logging.info(
-                f"UserRolesAPI {self.post.__name__} BAD_REQUEST"
-            )
+            logging.info(f"UserRolesAPI {self.post.__name__} BAD_REQUEST")
             return {
-                       "status": "User already have this role"
-                   }, HTTPStatus.BAD_REQUEST
+                "status": "User already have this role"
+            }, HTTPStatus.BAD_REQUEST
         creator = UserRoleCreator(
             {"user_id": user_id, "role_id": role_id},
-            UserRole, UserRoleRelation_db_model, db
+            UserRole,
+            UserRoleRelation_db_model,
+            db,
         )
         result, info = creator.save()
         if result is False:
-            logging.info(
-                f"UserRolesAPI {self.post.__name__} BAD_REQUEST"
-            )
+            logging.info(f"UserRolesAPI {self.post.__name__} BAD_REQUEST")
             return {"status": info}, HTTPStatus.BAD_REQUEST
         logging.debug(f"UserRolesAPI {self.post.__name__} end")
         return info, HTTPStatus.CREATED
@@ -100,7 +96,7 @@ class UserRolesDetailAPI(MethodView):
         user = db.session.get(User_db_model, user_id)
         role = db.session.get(Role_db_model, role_id)
         if role is None or user is None:
-            return '', HTTPStatus.NOT_FOUND
+            return "", HTTPStatus.NOT_FOUND
         user_role = UserRoleRelation_db_model.query.filter_by(
             role_id=role_id, user_id=user_id
         ).first()
@@ -109,8 +105,8 @@ class UserRolesDetailAPI(MethodView):
                 f"UserRolesDetailAPI {self.delete.__name__} BAD_REQUEST"
             )
             return {
-                       "status": "User does not have this role"
-                   }, HTTPStatus.BAD_REQUEST
+                "status": "User does not have this role"
+            }, HTTPStatus.BAD_REQUEST
         result, info = dell_obj(db, [user_role])
         if result is False:
             logging.info(

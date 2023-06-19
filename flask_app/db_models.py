@@ -114,18 +114,22 @@ class RolePermissionRelation(BaseID, BaseCreate, ToDictMixin):
 
 
 def create_login_history_partition(target, connection, **kw):
-    """ creating partition by login_history """
+    """creating partition by login_history"""
     try:
         logging.info("Create partitions")
         connection.execute(
-            text("""CREATE TABLE IF NOT EXISTS public.login_history_2022 
+            text(
+                """CREATE TABLE IF NOT EXISTS public.login_history_2022 
             PARTITION OF login_history FOR VALUES FROM 
-            ('2022-01-01') TO ('2022-12-31');""")
+            ('2022-01-01') TO ('2022-12-31');"""
+            )
         )
         connection.execute(
-            text("""CREATE TABLE IF NOT EXISTS public.login_history_2023 
+            text(
+                """CREATE TABLE IF NOT EXISTS public.login_history_2023 
             PARTITION OF login_history FOR VALUES FROM 
-            ('2023-01-01') TO ('2023-12-31');""")
+            ('2023-01-01') TO ('2023-12-31');"""
+            )
         )
         logging.info("Finished creating partitions")
     except Exception as error:
@@ -135,13 +139,13 @@ def create_login_history_partition(target, connection, **kw):
 
 
 class LoginHistory(db.Model, ToDictMixin):
-    __tablename__ = 'login_history'
+    __tablename__ = "login_history"
     __table_args__ = (
         UniqueConstraint("id", "create_at"),
         {
-            'postgresql_partition_by': 'RANGE (create_at)',
-            'listeners': [('after_create', create_login_history_partition)],
-        }
+            "postgresql_partition_by": "RANGE (create_at)",
+            "listeners": [("after_create", create_login_history_partition)],
+        },
     )
     id = db.Column(
         UUID(as_uuid=True),

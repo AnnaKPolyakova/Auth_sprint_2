@@ -29,9 +29,9 @@ class AuthManager:
 
     def _set_full_auth_param(self):
         self.full_auth_param = self.AUTH_PARAMS
-        self.full_auth_param[
-            "redirect_uri"
-        ] = "http://127.0.0.1:5000" + self.REDIRECT_URI
+        self.full_auth_param["redirect_uri"] = (
+            "http://127.0.0.1:5000" + self.REDIRECT_URI
+        )
 
     def _set_full_user_info_param(self, **kwargs):
         self.full_info_param = self.USER_INFO_PARAMS
@@ -51,7 +51,7 @@ class AuthManager:
             "login": login + "_" + str(random.random()),
             "email": email,
             "is_superuser": False,
-            "password": str(random.random())
+            "password": str(random.random()),
         }
         creator = UserCreator(user_data, User, User_db_model, db)
         result, _ = creator.save()
@@ -59,9 +59,7 @@ class AuthManager:
 
     def _get_token_data(self, code):
         self._set_full_token_data(code)
-        response = requests.post(
-            self.TOKEN_URI, data=self.full_token_data
-        )
+        response = requests.post(self.TOKEN_URI, data=self.full_token_data)
         return response.json()
 
     def _get_or_create_user(self, data, token):
@@ -70,11 +68,7 @@ class AuthManager:
     @staticmethod
     def _save_access_token_to_redis(user, token, expired):
         if expired:
-            redis_db.set(
-                name=str(user.id),
-                value=token,
-                ex=expired
-            )
+            redis_db.set(name=str(user.id), value=token, ex=expired)
         else:
             redis_db.set(name=str(user.id), value=token)
 
@@ -115,9 +109,7 @@ class YandexAuthManager(AuthManager):
         "client_id": CLIENT_ID,
         "client_secret": SECRET,
     }
-    USER_INFO_PARAMS = {
-        "format": "json"
-    }
+    USER_INFO_PARAMS = {"format": "json"}
 
     def _get_or_create_user(self, data, token):
         id_user = data.get("user_id", None)
@@ -153,17 +145,12 @@ class VKAuthManager(AuthManager):
         "response_type": "code",
         "client_id": CLIENT_ID,
         "display": "popup",
-        "scope": "email"
+        "scope": "email",
     }
     TOKEN_PARAMS = {
-        "client_id": CLIENT_ID,
-        "client_secret": SECRET,
-        "fields": "email"
+        "client_id": CLIENT_ID, "client_secret": SECRET, "fields": "email"
     }
-    USER_INFO_PARAMS = {
-        "v": settings.VERSION_VK,
-        "fields": "email"
-    }
+    USER_INFO_PARAMS = {"v": settings.VERSION_VK, "fields": "email"}
 
     @staticmethod
     def _get_token_from_data(data):
@@ -176,14 +163,13 @@ class VKAuthManager(AuthManager):
     def _set_full_token_params(self, code):
         self.full_token_params = self.TOKEN_PARAMS
         self.full_token_params["code"] = code
-        self.full_token_params["redirect_uri"] =\
+        self.full_token_params["redirect_uri"] = (
             "http://127.0.0.1:5000" + self.REDIRECT_URI
+        )
 
     def _get_token_data(self, code):
         self._set_full_token_params(code)
-        response = requests.post(
-            self.TOKEN_URI, data=self.full_token_params
-        )
+        response = requests.post(self.TOKEN_URI, data=self.full_token_params)
         return response.json()
 
     def _get_or_create_user(self, data, token):

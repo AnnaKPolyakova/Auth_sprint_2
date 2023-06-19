@@ -13,7 +13,7 @@ from flask_app.api.v1.utils.other import doc, superuser_only
 from flask_app.api.v1.utils.permission import (
     PermissionCreator,
     PermissionUpdater,
-    get_permissions
+    get_permissions,
 )
 from flask_app.db import db
 from flask_app.db_models import Permission as Permission_db_model
@@ -34,8 +34,8 @@ class PermissionsAPI(MethodView):
     def get(self):
         roles = get_permissions()
         return [
-                   Permission(**role.to_dict()).dict() for role in roles
-               ], HTTPStatus.OK
+            Permission(**role.to_dict()).dict() for role in roles
+        ], HTTPStatus.OK
 
     @jwt_required(verify_type=False)
     @superuser_only

@@ -6,8 +6,8 @@ from flask_app.db import db
 from flask_app.db_models import User
 
 
-@click.command('is_superuser_create')
-@click.argument('name')
+@click.command("is_superuser_create")
+@click.argument("name")
 def create_is_superuser(name):
     admin = User(login=name, is_superuser=True)
     admin.set_password(name)

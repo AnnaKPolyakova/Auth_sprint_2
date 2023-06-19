@@ -2,9 +2,7 @@ import logging
 from http import HTTPStatus
 
 from flask import Blueprint, current_app, request
-from flask_jwt_extended import (
-    get_jwt, get_jwt_identity, jwt_required
-)
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from spectree import Response
 
 from flask_app.api.v1.models.common import Status
@@ -82,8 +80,6 @@ def logout():
     logging.debug(f"TokenAPI {logout.__name__} start")
     token = get_jwt()
     jti = token["jti"]
-    redis_db.set(
-        jti, "", ex=current_app.config["JWT_ACCESS_TOKEN_EXPIRES"]
-    )
+    redis_db.set(jti, "", ex=current_app.config["JWT_ACCESS_TOKEN_EXPIRES"])
     logging.debug(f"TokenAPI {logout.__name__} end")
     return {"status": "success"}, HTTPStatus.OK

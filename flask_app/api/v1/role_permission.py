@@ -8,18 +8,23 @@ from spectree import Response
 
 from flask_app.api.v1.models.common import Status
 from flask_app.api.v1.models.permission import (
-    Permission, RolePermission, RolePermissionCreate
+    Permission,
+    RolePermission,
+    RolePermissionCreate,
 )
 from flask_app.api.v1.utils.other import doc, superuser_only
 from flask_app.api.v1.utils.managers import dell_obj
-from flask_app.api.v1.utils.role_permission import RolePermissionCreator, \
-    get_role_permissions
+from flask_app.api.v1.utils.role_permission import (
+    RolePermissionCreator,
+    get_role_permissions,
+)
 
 from flask_app.db import db
 from flask_app.db_models import Permission as Permission_db_model
 from flask_app.db_models import Role as Role_db_model
-from flask_app.db_models import \
-    RolePermissionRelation as RolePermissionRelation_db_model
+from flask_app.db_models import (
+    RolePermissionRelation as RolePermissionRelation_db_model,
+)
 
 role_permissions = Blueprint("role_permissions", __name__)
 
@@ -76,11 +81,13 @@ class RolePermissionsAPI(MethodView):
                 f"RolePermissionsAPI {self.post.__name__} BAD_REQUEST"
             )
             return {
-                       "status": "User already have this role"
-                   }, HTTPStatus.BAD_REQUEST
+                "status": "User already have this role"
+            }, HTTPStatus.BAD_REQUEST
         creator = RolePermissionCreator(
             {"role_id": role_id, "permission_id": permission_id},
-            RolePermission, RolePermissionRelation_db_model, db
+            RolePermission,
+            RolePermissionRelation_db_model,
+            db,
         )
         result, info = creator.save()
         if result is False:

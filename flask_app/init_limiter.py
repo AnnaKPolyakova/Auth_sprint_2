@@ -10,8 +10,7 @@ def init_limiter(app: Flask, settings):
         key_func=get_remote_address,
         default_limits=[limit],
         storage_uri="redis://{host}:{port}".format(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT
-        )
+            host=settings.REDIS_HOST, port=settings.REDIS_PORT
+        ),
     )
     limiter.init_app(app)

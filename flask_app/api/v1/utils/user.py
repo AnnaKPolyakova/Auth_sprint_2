@@ -6,7 +6,6 @@ from flask_app.settings import settings
 
 
 class UserCreator(ObjCreator):
-
     def save(self, is_superuser=False):
         self.obj.is_superuser = is_superuser
         self.obj.set_password()
@@ -24,7 +23,6 @@ def get_data_for_users_list(ids: list[uuid.UUID], page: int):
 
 
 class UserUpdater(ObjUpdater):
-
     def _update_obj(self):
         for field, value in self.new_data.items():
             if field == "password":

@@ -15,8 +15,12 @@ from flask_app.api.v1.models.user import User, UserCreate, UserIds, UserUpdate
 from flask_app.api.v1.utils.history import get_histories
 from flask_app.api.v1.utils.other import doc, superuser_only
 from flask_app.api.v1.utils.permission import check_permission_for_user
-from flask_app.api.v1.utils.user import (UserCreator, UserUpdater,
-                                         get_data_for_users_list, get_users)
+from flask_app.api.v1.utils.user import (
+    UserCreator,
+    UserUpdater,
+    get_data_for_users_list,
+    get_users,
+)
 from flask_app.db import db
 from flask_app.db_models import User as Users_db_model
 
@@ -38,8 +42,8 @@ class UserAPI(MethodView):
             return {"message": "User not found. Check uuid"}
         logging.debug(f"UserAPI {self.get.__name__} end")
         return [
-                   User(**user.to_dict()).dict() for user in users_all
-               ], HTTPStatus.OK
+            User(**user.to_dict()).dict() for user in users_all
+        ], HTTPStatus.OK
 
     @doc.validate(
         tags=["user"],
@@ -55,16 +59,12 @@ class UserAPI(MethodView):
                 login=request.get_json()["login"]
             ).count() > 0
         ):
-            logging.info(
-                f"UserAPI {self.post.__name__} already exist"
-            )
+            logging.info(f"UserAPI {self.post.__name__} already exist")
             return {"status": "already exist"}, HTTPStatus.BAD_REQUEST
         creator = UserCreator(request, User, Users_db_model, db)
         result, info = creator.save()
         if result is False:
-            logging.info(
-                f"UserAPI {self.post.__name__} BAD_REQUEST"
-            )
+            logging.info(f"UserAPI {self.post.__name__} BAD_REQUEST")
             return {"status": info}, HTTPStatus.BAD_REQUEST
         logging.debug(f"UserAPI {self.post.__name__} end")
         return info, HTTPStatus.CREATED
@@ -80,7 +80,7 @@ class UserAPI(MethodView):
 def get_users_data():
     logging.debug(f"UserAPI {get_users_data.__name__} start")
     page = request.args.get("page", default=1, type=int)
-    users_data = get_data_for_users_list(request.get_json()['ids'], page)
+    users_data = get_data_for_users_list(request.get_json()["ids"], page)
     logging.debug(f"UserAPI {get_users_data.__name__} end")
     return [
         User(**user.to_dict()).dict() for user in users_data
@@ -105,41 +105,33 @@ class UserDetailAPI(MethodView):
                 f"UserAPI {self.patch.__name__} is not owner or not exist"
             )
             return {
-                       "status": "is not owner or not exist"
-                   }, HTTPStatus.BAD_REQUEST
+                "status": "is not owner or not exist"
+            }, HTTPStatus.BAD_REQUEST
         new_data = request.get_json()
         updater = UserUpdater(new_data, User, UserUpdate, db, user)
         result, info = updater.update()
         if result is False:
-            logging.info(
-                f"UserAPI {self.patch.__name__} BAD_REQUEST"
-            )
+            logging.info(f"UserAPI {self.patch.__name__} BAD_REQUEST")
             return {"status": info}, HTTPStatus.BAD_REQUEST
         logging.debug(f"UserDetailAPI {self.patch.__name__} end")
         return info, HTTPStatus.OK
 
     @doc.validate(
         tags=["user"],
-        resp=Response(
-            HTTP_200=(User, "Get user"), HTTP_400=(Status, "Error")
-        ),
+        resp=Response(HTTP_200=(User, "Get user"), HTTP_400=(Status, "Error")),
     )
     def get(self, user_id):
         logging.debug(f"UserDetailAPI {self.get.__name__} start")
         try:
             uuid.UUID(user_id)
         except Exception:
-            return {
-                "status": "user id invalid"
-            }, HTTPStatus.BAD_REQUEST
+            return {"status": "user id invalid"}, HTTPStatus.BAD_REQUEST
         user = db.session.get(Users_db_model, user_id)
         if user is None or str(user.id) != user_id:
             logging.info(
                 f"UserAPI {self.patch.__name__} is not owner or not exist"
             )
-            return {
-                       "status": "not exist"
-                   }, HTTPStatus.NOT_FOUND
+            return {"status": "not exist"}, HTTPStatus.NOT_FOUND
         logging.debug(f"UserDetailAPI {self.get.__name__} end")
         return User(**user.to_dict()).dict(), HTTPStatus.OK
 
@@ -157,9 +149,7 @@ def histories_get():
     user_id = get_jwt_identity()
     user = db.session.get(Users_db_model, user_id)
     if user is None:
-        logging.info(
-            f"UserAPI {histories_get.__name__} is not owner"
-        )
+        logging.info(f"UserAPI {histories_get.__name__} is not owner")
         return {"status": "is not owner"}, HTTPStatus.BAD_REQUEST
     histories = get_histories(user, page)
     logging.debug(f"UserDetailAPI {histories_get.__name__} end")
@@ -181,9 +171,7 @@ def check_permission(user_id):
     logging.debug(f"UserDetailAPI {check_permission.__name__} start")
     user = db.session.get(Users_db_model, user_id)
     if user is None:
-        logging.info(
-            f"UserAPI {check_permission.__name__} User not exist"
-        )
+        logging.info(f"UserAPI {check_permission.__name__} User not exist")
         return {"status": "User not exist"}, HTTPStatus.BAD_REQUEST
     permission_id = request.get_json()["permission_id"]
     result = check_permission_for_user(user, permission_id)
@@ -203,11 +191,9 @@ def check_permission(user_id):
 )
 def create_is_superuser():
     logging.debug(f"UserDetailAPI {create_is_superuser.__name__} start")
-    if (
-            Users_db_model.query.filter_by(
-                login=request.get_json()["login"]
-            ).count() > 0
-    ):
+    if Users_db_model.query.filter_by(
+            login=request.get_json()["login"]
+    ).count() > 0:
         logging.info(
             f"UserDetailAPI {create_is_superuser.__name__} already exist"
         )
@@ -248,6 +234,5 @@ def wait():
 
 users.add_url_rule("/", view_func=UserAPI.as_view("users"))
 users.add_url_rule(
-    "/<path:user_id>/",
-    view_func=UserDetailAPI.as_view("users_detail")
+    "/<path:user_id>/", view_func=UserDetailAPI.as_view("users_detail")
 )

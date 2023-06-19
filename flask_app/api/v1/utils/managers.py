@@ -7,15 +7,12 @@ from flask_app.db import db as _db
 
 
 class ObjCreator:
-
     def __init__(self, data, model, db_model, db, format_data=DICT):
         self.data: Union[dict, request] = data
         self.model = model
         self.db_model: _db.Model = db_model
         self.format: str = format_data
-        self.formats_and_classes = {
-            DICT: self.get_obj_dict
-        }
+        self.formats_and_classes = {DICT: self.get_obj_dict}
         self.obj: _db.Model = self._create_obj()
         self.db: _db = db
 
@@ -54,16 +51,13 @@ def dell_obj(db, objs: list):
 
 
 class ObjUpdater:
-
     def __init__(self, new_data, model, db_model, db, obj, format_data=DICT):
         self.new_data: dict = new_data
         self.model = model
         self.db_model: _db.Model = db_model
         self.format: str = format_data
         self.obj = obj
-        self.formats_and_classes = {
-            DICT: self._get_obj_dict
-        }
+        self.formats_and_classes = {DICT: self._get_obj_dict}
         self.db: _db = db
 
     def _get_obj_dict(self):

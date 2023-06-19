@@ -8,6 +8,6 @@ class HistoryCreator(ObjCreator):
 
 
 def get_histories(user, page):
-    return LoginHistory_db_model.query.filter_by(
-        user_id=user.id
-    ).paginate(page=page, per_page=settings.PAGE_SIZE)
+    return LoginHistory_db_model.query.filter_by(user_id=user.id).paginate(
+        page=page, per_page=settings.PAGE_SIZE
+    )
