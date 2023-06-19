@@ -137,4 +137,4 @@ class ProxyManager:
         if response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
             self.logging.error("Internal_server_error")
             return {"status": False}, HTTPStatus.BAD_REQUEST
-        return json.loads(response.text),response.status_code
+        return json.loads(response.text), response.status_code
