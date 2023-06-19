@@ -39,3 +39,7 @@ class AccessTokens(BaseModel):
 
 class UserId(BaseModel):
     user_id: str
+
+
+class UserIds(BaseModel):
+    ids: list

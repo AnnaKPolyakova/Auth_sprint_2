@@ -8,10 +8,13 @@ from spectree import Response
 
 from flask_app.api.v1.models.common import Status
 from flask_app.api.v1.models.permission import Permission, PermissionCreate
-from flask_app.api.v1.utils.other import doc, superuser_only
 from flask_app.api.v1.utils.managers import dell_obj
-from flask_app.api.v1.utils.permission import PermissionCreator, \
-    get_permissions, PermissionUpdater
+from flask_app.api.v1.utils.other import doc, superuser_only
+from flask_app.api.v1.utils.permission import (
+    PermissionCreator,
+    PermissionUpdater,
+    get_permissions
+)
 from flask_app.db import db
 from flask_app.db_models import Permission as Permission_db_model
 

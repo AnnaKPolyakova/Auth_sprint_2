@@ -11,15 +11,14 @@ from spectree import Response
 from flask_app.api.v1.models.common import ResultBool, Status, UserId
 from flask_app.api.v1.models.history import LoginHistory
 from flask_app.api.v1.models.permission import CheckPermission, Page
-from flask_app.api.v1.models.user import User, UserCreate, UserUpdate
+from flask_app.api.v1.models.user import User, UserCreate, UserIds, UserUpdate
 from flask_app.api.v1.utils.history import get_histories
 from flask_app.api.v1.utils.other import doc, superuser_only
 from flask_app.api.v1.utils.permission import check_permission_for_user
-from flask_app.api.v1.utils.user import UserCreator, get_users, UserUpdater
+from flask_app.api.v1.utils.user import (UserCreator, UserUpdater,
+                                         get_data_for_users_list, get_users)
 from flask_app.db import db
-from flask_app.db_models import (
-    User as Users_db_model
-)
+from flask_app.db_models import User as Users_db_model
 
 users = Blueprint("users", __name__)
 
@@ -69,6 +68,23 @@ class UserAPI(MethodView):
             return {"status": info}, HTTPStatus.BAD_REQUEST
         logging.debug(f"UserAPI {self.post.__name__} end")
         return info, HTTPStatus.CREATED
+
+
+@users.route("/users_data/", methods=["POST"])
+@doc.validate(
+    tags=["user"],
+    json=UserIds,
+    query=Page,
+    resp=Response(HTTP_200=(list[User], "Get all histories for user")),
+)
+def get_users_data():
+    logging.debug(f"UserAPI {get_users_data.__name__} start")
+    page = request.args.get("page", default=1, type=int)
+    users_data = get_data_for_users_list(request.get_json()['ids'], page)
+    logging.debug(f"UserAPI {get_users_data.__name__} end")
+    return [
+        User(**user.to_dict()).dict() for user in users_data
+    ], HTTPStatus.OK
 
 
 class UserDetailAPI(MethodView):

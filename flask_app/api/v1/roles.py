@@ -8,9 +8,9 @@ from spectree import Response
 
 from flask_app.api.v1.models.common import Status
 from flask_app.api.v1.models.role import Role, RoleCreate
-from flask_app.api.v1.utils.other import doc, superuser_only
 from flask_app.api.v1.utils.managers import dell_obj
-from flask_app.api.v1.utils.role import RoleCreator, get_roles, RoleUpdater
+from flask_app.api.v1.utils.other import doc, superuser_only
+from flask_app.api.v1.utils.role import RoleCreator, RoleUpdater, get_roles
 from flask_app.db import db
 from flask_app.db_models import Role as Roles_db_model
 

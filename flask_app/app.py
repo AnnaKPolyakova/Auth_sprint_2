@@ -9,7 +9,7 @@ from pydantic import BaseSettings
 from flask_app.api.v1.permission import permissions
 from flask_app.api.v1.role_permission import role_permissions
 from flask_app.api.v1.roles import roles
-from flask_app.api.v1.social_auth import social_login, social_complete
+from flask_app.api.v1.social_auth import social_complete, social_login
 from flask_app.api.v1.tokens import tokens
 from flask_app.api.v1.user_roles import user_roles
 from flask_app.api.v1.users import users

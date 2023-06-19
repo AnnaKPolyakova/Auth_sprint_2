@@ -1,5 +1,5 @@
-from flask_app.db_models import Permission as Permission_db_model
 from flask_app.api.v1.utils.managers import ObjCreator, ObjUpdater
+from flask_app.db_models import Permission as Permission_db_model
 
 
 class PermissionCreator(ObjCreator):

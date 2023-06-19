@@ -1,5 +1,4 @@
 from flask_app.api.v1.utils.managers import ObjCreator
-
 from flask_app.db_models import LoginHistory as LoginHistory_db_model
 from flask_app.settings import settings
 

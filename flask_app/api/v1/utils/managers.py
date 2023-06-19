@@ -1,4 +1,5 @@
 from typing import Union
+
 from flask import request
 
 from flask_app.api.v1.utils.defines import DICT

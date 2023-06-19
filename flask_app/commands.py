@@ -2,8 +2,8 @@ import logging
 
 import click
 
-from flask_app.db_models import User
 from flask_app.db import db
+from flask_app.db_models import User
 
 
 @click.command('is_superuser_create')

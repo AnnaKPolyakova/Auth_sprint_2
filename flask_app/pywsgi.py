@@ -4,6 +4,7 @@ from gevent import monkey
 monkey.patch_all()
 
 from gevent.pywsgi import WSGIServer
+
 from flask_app.app import create_app
 
 app = create_app()
