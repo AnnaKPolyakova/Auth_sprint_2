@@ -34,3 +34,7 @@ class CheckPermission(BaseModel):
 
 class Page(BaseModel):
     page: Optional[int] = 1
+
+
+class FieldAndPage(Page):
+    field: str

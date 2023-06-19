@@ -10,7 +10,8 @@ from spectree import Response
 
 from flask_app.api.v1.models.common import ResultBool, Status, UserId
 from flask_app.api.v1.models.history import LoginHistory
-from flask_app.api.v1.models.permission import CheckPermission, Page
+from flask_app.api.v1.models.permission import CheckPermission, Page, \
+    FieldAndPage
 from flask_app.api.v1.models.user import User, UserCreate, UserIds, UserUpdate
 from flask_app.api.v1.utils.history import get_histories
 from flask_app.api.v1.utils.other import doc, superuser_only
@@ -19,7 +20,7 @@ from flask_app.api.v1.utils.user import (
     UserCreator,
     UserUpdater,
     get_data_for_users_list,
-    get_users,
+    get_users, get_users_values_dict,
 )
 from flask_app.db import db
 from flask_app.db_models import User as Users_db_model
@@ -74,17 +75,19 @@ class UserAPI(MethodView):
 @doc.validate(
     tags=["user"],
     json=UserIds,
-    query=Page,
-    resp=Response(HTTP_200=(list[User], "Get all histories for user")),
+    query=FieldAndPage,
+    resp=Response("HTTP_200"),
 )
 def get_users_data():
     logging.debug(f"UserAPI {get_users_data.__name__} start")
     page = request.args.get("page", default=1, type=int)
-    users_data = get_data_for_users_list(request.get_json()["ids"], page)
+    field = request.args.get("field", default="mail", type=str)
+    users_data = get_data_for_users_list(
+        request.get_json()["ids"], page
+    )
+    data = get_users_values_dict(users_data, User, field)
     logging.debug(f"UserAPI {get_users_data.__name__} end")
-    return [
-        User(**user.to_dict()).dict() for user in users_data
-    ], HTTPStatus.OK
+    return data, HTTPStatus.OK
 
 
 class UserDetailAPI(MethodView):

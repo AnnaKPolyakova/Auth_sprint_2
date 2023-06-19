@@ -58,7 +58,7 @@ class ProxyManager:
         try:
             from auth_proxy_app.wsgi_app import app
             return app.logger
-        except:
+        except:  # noqa: E722
             return logging
 
     def _get_db_key(self):
