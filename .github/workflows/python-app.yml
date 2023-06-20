@@ -34,7 +34,9 @@ jobs:
     - name: Start PostgreSQL service
       run: sudo service postgresql start
     - name: Setup database
-      run: psql -h localhost -U app -c 'CREATE DATABASE app_test;'
+      run: |
+        psql -c 'CREATE USER app WITH ENCRYPTED PASSWORD 123qwe;'
+        psql -h localhost -U app -c 'CREATE DATABASE app_test OWNER app;'
 
     - name: Install dependencies
       id: dependencies
