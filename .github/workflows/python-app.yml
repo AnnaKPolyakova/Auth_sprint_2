@@ -32,7 +32,7 @@ jobs:
     - name: Install PostgreSQL client
       run: |
         apt-get update
-        apt-get install --yes postgresql-client
+        apt-get install --yes --no-install-recommends postgresql-client
     - name: Setup database
       run: psql -h localhost -U app -c 'CREATE DATABASE app_test;'
 
