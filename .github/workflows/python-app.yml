@@ -134,4 +134,4 @@ jobs:
               echo DB_ENGINE=${{ secrets.TRACER_ON }} >> .env
               echo DB_ENGINE=${{ secrets.DEFAULT_LIMITS }} >> .env
   
-              sudo docker-compose up -d   
+              sudo docker-compose up -d
