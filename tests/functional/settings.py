@@ -24,6 +24,7 @@ class TestSettings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     JWT_SECRET_KEY: str = "test"
+    DEFAULT_LIMITS: int
 
     class Config:
         env_file = os.path.join(BASE_DIR, ".env", ".env_test")
