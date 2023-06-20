@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 
 import requests
 
@@ -11,27 +12,28 @@ from flask_app.settings import settings
 
 
 class AuthManager:
-    TOKEN_URI = None
-    REDIRECT_URI = None
-    USER_INFO_URI = None
-    AUTH_URL = None
-    CLIENT_ID = None
-    SECRET = None
-    AUTH_PARAMS = dict()
-    USER_INFO_PARAMS = dict()
-    TOKEN_DATA = dict()
+    TOKEN_URI: Optional[str] = None
+    REDIRECT_URI: Optional[str] = None
+    USER_INFO_URI: Optional[str] = None
+    AUTH_URL: Optional[str] = None
+    CLIENT_ID: Optional[str] = None
+    SECRET: Optional[str] = None
+    AUTH_PARAMS: dict = dict()
+    USER_INFO_PARAMS: dict = dict()
+    TOKEN_DATA: dict = dict()
 
     def __init__(self):
-        self.full_auth_param = dict()
-        self.full_token_data = dict()
-        self.full_info_param = dict()
-        self.full_token_param = dict()
+        self.full_auth_param: dict = dict()
+        self.full_token_data: dict = dict()
+        self.full_info_param: dict = dict()
+        self.full_token_param: dict = dict()
 
     def _set_full_auth_param(self):
         self.full_auth_param = self.AUTH_PARAMS
-        self.full_auth_param["redirect_uri"] = (
-            "http://127.0.0.1:5000" + self.REDIRECT_URI
-        )
+        if self.REDIRECT_URI is not None:
+            self.full_auth_param["redirect_uri"] = (
+                "http://127.0.0.1:5000" + self.REDIRECT_URI
+            )
 
     def _set_full_user_info_param(self, **kwargs):
         self.full_info_param = self.USER_INFO_PARAMS
@@ -136,11 +138,11 @@ class YandexAuthManager(AuthManager):
 
 
 class VKAuthManager(AuthManager):
-    TOKEN_URI = settings.TOKEN_URL_VK
-    REDIRECT_URI = "/api/v1/social/complete/vk/"
-    AUTH_URL = settings.AUTH_URL_VK
-    CLIENT_ID = settings.CLIENT_ID_VK
-    SECRET = settings.SECRET_VK
+    TOKEN_URI: str = settings.TOKEN_URL_VK
+    REDIRECT_URI: str = "/api/v1/social/complete/vk/"
+    AUTH_URL: str = settings.AUTH_URL_VK
+    CLIENT_ID: str = settings.CLIENT_ID_VK
+    SECRET: str = settings.SECRET_VK
     AUTH_PARAMS = {
         "response_type": "code",
         "client_id": CLIENT_ID,

@@ -1,5 +1,6 @@
 from datetime import timedelta
 from logging.config import dictConfig
+from typing import Union
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
@@ -17,11 +18,12 @@ from flask_app.api.v1.utils.other import doc
 from flask_app.commands import create_is_superuser
 from flask_app.db_init import init_db
 from flask_app.init_limiter import init_limiter
-from flask_app.settings import settings
+from flask_app.settings import settings, Settings
 from flask_app.tracer import configure_tracer
+from tests.functional.settings import TestSettings
 
 
-def create_app(settings: BaseSettings = settings):
+def create_app(app_settings: Union[Settings, TestSettings] = settings):
     dictConfig(
         {
             "version": 1,
@@ -44,11 +46,11 @@ def create_app(settings: BaseSettings = settings):
     )
     current_app = Flask("auth_app")
 
-    current_app.config["JWT_SECRET_KEY"] = settings.JWT_SECRET_KEY
+    current_app.config["JWT_SECRET_KEY"] = app_settings.JWT_SECRET_KEY
     current_app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     current_app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
-    init_db(current_app, settings)
+    init_db(current_app, app_settings)
     current_app.register_blueprint(users, url_prefix="/api/v1/users")
     current_app.register_blueprint(tokens, url_prefix="/api/v1/tokens")
     current_app.register_blueprint(roles, url_prefix="/api/v1/roles")
@@ -69,7 +71,7 @@ def create_app(settings: BaseSettings = settings):
     )
     current_app.cli.add_command(create_is_superuser)
     doc.register(current_app)
-    init_limiter(current_app, settings)
+    init_limiter(current_app, app_settings)
     return current_app
 
 
