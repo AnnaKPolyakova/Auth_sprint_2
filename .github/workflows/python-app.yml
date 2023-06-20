@@ -38,7 +38,7 @@ jobs:
       run: |
         docker exec -i -e localhost $db bash <<-EOSQL
              psql -c 'CREATE USER app WITH ENCRYPTED PASSWORD '123qwe';'
-             psql -h localhost -U app -c 'CREATE DATABASE app_test OWNER app;'\
+             psql -h localhost -U app -c 'CREATE DATABASE app_test OWNER app;'
         EOSQL
 
     - name: Install dependencies
