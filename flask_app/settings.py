@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = Field(env="POSTGRES_PASSWORD", default='123qwe')
     POSTGRES_HOST: str = Field(env="POSTGRES_HOST", default='localhost')
     POSTGRES_PORT: int = Field(env="POSTGRES_PORT", default=5432)
-    POSTGRES_DB: str = Field(env="POSTGRES_DB", default='auth')
+    POSTGRES_DB: str = Field(env="POSTGRES_DB", default='auth_test')
     POSTGRES_USER: str = Field(env="POSTGRES_USER", default='app')
     JWT_SECRET_KEY: str = Field(
         env="JWT_SECRET_KEY",
