@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int = Field(env="REDIS_PORT", default=6379)
     REDIS_PROTOCOL: str = Field(env="REDIS_PROTOCOL", default='redis')
     POSTGRES_PASSWORD: str = Field(env="POSTGRES_PASSWORD", default='123qwe')
-    POSTGRES_HOST: str = Field(env="POSTGRES_HOST", default='localhost')
+    POSTGRES_HOST: str = Field(env="POSTGRES_HOST", default='db')
     POSTGRES_PORT: int = Field(env="POSTGRES_PORT", default=5432)
     POSTGRES_DB: str = Field(env="POSTGRES_DB", default='auth')
     POSTGRES_USER: str = Field(env="POSTGRES_USER", default='app')
