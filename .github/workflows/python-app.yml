@@ -34,14 +34,18 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version:  ${{ matrix.python-version }}
-    - name: Set up PostgreSQL
-      run: sudo apt-get install postgresql
-    - name: Start PostgreSQL service
-      run: sudo service postgresql start
+#    - name: Set up PostgreSQL
+#      run: sudo apt-get install postgresql
+#    - name: Start PostgreSQL service
+#      run: sudo service postgresql start
     - name: Setup database
       run: |
-        psql -c 'CREATE USER app WITH ENCRYPTED PASSWORD 123qwe;'
-        psql -h localhost -U app -c 'CREATE DATABASE app_test OWNER app;'
+#        psql -c 'CREATE USER app WITH ENCRYPTED PASSWORD '123qwe';'
+#        psql -h localhost -U app -c 'CREATE DATABASE app_test OWNER app;'\
+        docker exec -i -e localhost $db bash <<-EOSQL
+             psql -c 'CREATE USER app WITH ENCRYPTED PASSWORD '123qwe';'
+             psql -h localhost -U app -c 'CREATE DATABASE app_test OWNER app;'\
+        EOSQL
 
     - name: Install dependencies
       id: dependencies
