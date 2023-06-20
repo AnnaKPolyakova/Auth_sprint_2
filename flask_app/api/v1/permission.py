@@ -1,5 +1,6 @@
 import logging
 from http import HTTPStatus
+from typing import List
 
 from flask import Blueprint, request
 from flask.views import MethodView
@@ -27,7 +28,7 @@ class PermissionsAPI(MethodView):
     @doc.validate(
         tags=["permissions"],
         resp=Response(
-            HTTP_200=(list[Permission], "Get all permissions"),
+            HTTP_200=(List[Permission], "Get all permissions"),
             HTTP_403=(Status, "Superuser only"),
         ),
     )
