@@ -44,7 +44,7 @@ class PermissionsAPI(MethodView):
         tags=["permissions"],
         json=PermissionCreate,
         resp=Response(
-            HTTP_200=(list[Permission], "Create new permission"),
+            HTTP_200=(List[Permission], "Create new permission"),
             HTTP_403=(Status, "Superuser only"),
         ),
     )

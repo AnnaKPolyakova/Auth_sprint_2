@@ -1,5 +1,6 @@
 import logging
 from http import HTTPStatus
+from typing import List
 
 from flask import Blueprint, request
 from flask.views import MethodView
@@ -24,7 +25,7 @@ class UserRolesAPI(MethodView):
     @doc.validate(
         tags=["user_roles"],
         resp=Response(
-            HTTP_200=(list[Role], "Get all roles for user"),
+            HTTP_200=(List[Role], "Get all roles for user"),
             HTTP_404=("", "Object does not exist"),
         ),
     )
