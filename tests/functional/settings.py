@@ -17,7 +17,7 @@ class TestSettings(BaseSettings):
     REDIS_HOST: str = Field(env="REDIS_HOST", default='redis')
     REDIS_PORT: str = Field(env="REDIS_PORT", default='6379')
     REDIS_PROTOCOL: str = Field(env="REDIS_PROTOCOL", default='redis')
-    POSTGRES_HOST: str = Field(env="REDIS_HOST", default='db')
+    POSTGRES_HOST: str = Field(env="REDIS_HOST", default='localhost')
     POSTGRES_PORT: int = Field(env="POSTGRES_PORT", default=5432)
     POSTGRES_DB: str = Field(env="POSTGRES_DB", default='auth')
     POSTGRES_DB_TEST: str = Field(env="POSTGRES_DB_TEST", default='auth_test')
