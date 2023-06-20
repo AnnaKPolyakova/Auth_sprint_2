@@ -1,4 +1,5 @@
 import uuid
+from typing import List
 
 from flask_sqlalchemy.pagination import QueryPagination
 from pydantic import BaseModel
@@ -19,7 +20,7 @@ def get_users():
     return Users_db_model.query.all()
 
 
-def get_data_for_users_list(ids: list[uuid.UUID], page: int):
+def get_data_for_users_list(ids: List[uuid.UUID], page: int):
     return Users_db_model.query.filter(Users_db_model.id.in_(ids)).paginate(
         page=page, per_page=settings.PAGE_SIZE
     )
