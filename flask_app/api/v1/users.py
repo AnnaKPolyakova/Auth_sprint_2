@@ -2,6 +2,7 @@ import logging
 import time
 import uuid
 from http import HTTPStatus
+from typing import List
 
 from flask import Blueprint, request
 from flask.views import MethodView
@@ -31,7 +32,7 @@ users = Blueprint("users", __name__)
 class UserAPI(MethodView):
     @doc.validate(
         tags=["user"],
-        resp=Response("HTTP_200", HTTP_200=(list[User], "Get all users")),
+        resp=Response("HTTP_200", HTTP_200=(List[User], "Get all users")),
     )
     def get(self):
         logging.debug(f"UserAPI {self.get.__name__} start")
@@ -144,7 +145,7 @@ class UserDetailAPI(MethodView):
 @doc.validate(
     tags=["history"],
     query=Page,
-    resp=Response(HTTP_200=(list[LoginHistory], "Get all histories for user")),
+    resp=Response(HTTP_200=(List[LoginHistory], "Get all histories for user")),
 )
 def histories_get():
     logging.debug(f"UserDetailAPI {histories_get.__name__} start")
