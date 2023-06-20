@@ -17,9 +17,9 @@ jobs:
       db:
         image: postgres:12.4
         env:
-          POSTGRES_DB: app_test
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: 123qwe
+          POSTGRES_DB: 'app_test'
+          POSTGRES_USER: 'app'
+          POSTGRES_PASSWORD: '123qwe'
         ports:
           - 5432:5432
     steps:
