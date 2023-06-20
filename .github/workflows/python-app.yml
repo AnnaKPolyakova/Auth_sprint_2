@@ -1,0 +1,137 @@
+name: Python application
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  checks:
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9' ]
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      id: python-version
+      uses: actions/setup-python@v2
+      with:
+        python-version:  ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      id: dependencies
+      if: always()
+      run: |
+        python -m pip install --upgrade pip
+        pip install wemake-python-styleguide flake8-html lxml mypy
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: send error message
+      uses: appleboy/telegram-action@master
+      if: failure()
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: "
+          _____________________________________________________________
+          
+          Project: ${{ github.repository }}
+          
+          Author: ${{ github.actor }}
+          
+          Commit: ${{ github.sha }}
+          
+          Python ${{ matrix.python-version }}
+          
+          Pipeline finished with error.
+          
+          Steps details - ${{ toJson(steps) }}
+        "
+    - name: send success message
+      uses: appleboy/telegram-action@master
+      if: success()
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: "
+          _____________________________________________________________
+
+          Project: ${{ github.repository }}
+
+          Author: ${{ github.actor }}
+
+          Commit: ${{ github.sha }}
+
+          Python ${{ matrix.python-version }}
+          
+          Pipeline finished successfully.
+        "
+build_and_push_to_docker_hub:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Check out the repo
+        # Проверка доступности репозитория Docker Hub для workflow
+        uses: actions/checkout@v2 
+      - name: Set up Docker Buildx
+        # Вызов сборщика контейнеров docker
+        uses: docker/setup-buildx-action@v1 
+      - name: Login to Docker 
+        # Запуск скрипта авторизации на Docker Hub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} 
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push to Docker Hub
+        # Пуш образа в Docker Hub 
+        uses: docker/build-push-action@v2 
+        with:
+          push: true
+          tags:  ${{ secrets.DOCKER_USERNAME }}/Auth_sprint_2:latest
+deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+      - name: executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            sudo docker-compose stop
+            sudo docker-compose rm auth_app
+            touch .env
+            echo DB_ENGINE=${{ secrets.REDIS_HOST }} >> .env
+            echo DB_ENGINE=${{ secrets.REDIS_PORT }} >> .env
+            echo DB_ENGINE=${{ secrets.FILM_CACHE_EXPIRE_IN_SECONDS }} >> .env
+            echo DB_ENGINE=${{ secrets.REDIS_PROTOCOL }} >> .env
+            echo DB_ENGINE=${{ secrets.POSTGRES_DB }} >> .env
+            echo DB_ENGINE=${{ secrets.POSTGRES_USER }} >> .env
+            echo DB_ENGINE=${{ secrets.POSTGRES_PASSWORD }} >> .env
+            echo DB_ENGINE=${{ secrets.POSTGRES_HOST }} >> .env
+            echo DB_ENGINE=${{ secrets.POSTGRES_PORT }} >> .env
+            echo DB_ENGINE=${{ secrets.POSTGRES_DB_TEST }} >> .env
+            echo DB_ENGINE=${{ secrets.JWT_SECRET_KEY }} >> .env
+            echo DB_ENGINE=${{ secrets.PAGE_SIZE }} >> .env
+            echo DB_ENGINE=${{ secrets.CLIENT_ID_YANDEX }} >> .env
+            echo DB_ENGINE=${{ secrets.SECRET_YANDEX }} >> .env
+            echo DB_ENGINE=${{ secrets.AUTH_URL_YANDEX }} >> .env
+            echo DB_ENGINE=${{ secrets.TOKEN_URL_YANDEX }} >> .env
+            echo DB_ENGINE=${{ secrets.USER_INFO_URL_YANDEX }} >> .env
+            echo DB_ENGINE=${{ secrets.CLIENT_ID_VK }} >> .env
+            echo DB_ENGINE=${{ secrets.SECRET_VK }} >> .env
+            echo DB_ENGINE=${{ secrets.AUTH_URL_VK }} >> .env
+            echo DB_ENGINE=${{ secrets.TOKEN_URL_VK }} >> .env
+            echo DB_ENGINE=${{ secrets.VERSION_VK }} >> .env
+            echo DB_ENGINE=${{ secrets.AGENT_HOST_NAME }} >> .env
+            echo DB_ENGINE=${{ secrets.AGENT_PORT }} >> .env
+            echo DB_ENGINE=${{ secrets.TRACER_ON }} >> .env
+            echo DB_ENGINE=${{ secrets.DEFAULT_LIMITS }} >> .env
+
+            sudo docker-compose up -d   
