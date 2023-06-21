@@ -14,7 +14,7 @@ load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env_test"), override=True)
 
 
 class TestSettings(BaseSettings):
-    REDIS_HOST: str = Field(env="REDIS_HOST", default='redis')
+    REDIS_HOST: str = Field(env="REDIS_HOST", default='localhost')
     REDIS_PORT: str = Field(env="REDIS_PORT", default='6379')
     REDIS_PROTOCOL: str = Field(env="REDIS_PROTOCOL", default='redis')
     POSTGRES_HOST: str = 'localhost'
