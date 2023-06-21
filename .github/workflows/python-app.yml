@@ -36,11 +36,9 @@ jobs:
         python-version:  ${{ matrix.python-version }}
     - name: Setup database
       run: |
-        docker exec -i -e localhost db psql <<-EOSQL
-             'CREATE USER app WITH ENCRYPTED PASSWORD 123qwe;'
-             'CREATE DATABASE app_test OWNER app;'
+        docker exec -i -e 123qwe db bash <<-EOSQL
+          createdb -U app app_test
         EOSQL
-
     - name: Install dependencies
       id: dependencies
       if: always()
