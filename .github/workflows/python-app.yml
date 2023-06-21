@@ -15,20 +15,20 @@ jobs:
 
 
     runs-on: ubuntu-latest
-    services:
-      db:
-        image: postgres:12.4
-        env:
-          POSTGRES_DB: 'auth_test'
-          POSTGRES_USER: 'app'
-          POSTGRES_PASSWORD: '123qwe'
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+#    services:
+#      db:
+#        image: postgres:12.4
+#        env:
+#          POSTGRES_DB: 'auth_test'
+#          POSTGRES_USER: 'app'
+#          POSTGRES_PASSWORD: '123qwe'
+#        ports:
+#          - 5432:5432
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -38,9 +38,7 @@ jobs:
         python-version:  ${{ matrix.python-version }}
     - name: Setup database
       run: |
-        docker exec -it db bash
-        psql
-        CREATE DATABASE mydb;
+        docker run --network host -e PGPASSWORD="123qwe" postgres:12.4 psql -h localhost -U app -c "CREATE DATABASE auth_test"
     - name: Install dependencies
       id: dependencies
       if: always()
