@@ -34,8 +34,8 @@ services:
       - moves_network
 
   auth_app:
-#    build: .
-    image: sova040888/Auth_sprint_2:latest
+    build: .
+#    image: sova040888/Auth_sprint_2:latest
     container_name: auth_app
     restart: always
     volumes:
