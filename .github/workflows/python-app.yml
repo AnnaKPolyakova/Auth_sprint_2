@@ -36,9 +36,9 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version:  ${{ matrix.python-version }}
-    - name: Setup database
-      run: |
-        docker run --network bridge -e PGPASSWORD="123qwe" postgres:12.4 psql db app -c "CREATE DATABASE auth_test"
+#    - name: Setup database
+#      run: |
+#        docker run --network bridge -e PGPASSWORD="123qwe" postgres:12.4 psql db app -c "CREATE DATABASE auth_test"
     - name: Install dependencies
       id: dependencies
       if: always()
