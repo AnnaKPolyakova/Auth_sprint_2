@@ -18,11 +18,10 @@ jobs:
     services:
       db:
         image: postgres:12.4
-#        environment:
-#          POSTGRES_HOST_AUTH_METHOD: trust
-#          POSTGRES_DB: 'auth_test'
-#          POSTGRES_USER: 'app'
-#          POSTGRES_PASSWORD: '123qwe'
+        env:
+          POSTGRES_DB: 'auth_test'
+          POSTGRES_USER: 'app'
+          POSTGRES_PASSWORD: '123qwe'
         ports:
           - 5432:5432
         options: >-
