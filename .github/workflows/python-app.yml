@@ -16,10 +16,10 @@ jobs:
     services:
       db:
         image: postgres:12.4
-        env:
-          POSTGRES_DB: 'app_test'
-          POSTGRES_USER: 'app'
-          POSTGRES_PASSWORD: '123qwe'
+#        env:
+#          POSTGRES_DB: 'auth_test'
+#          POSTGRES_USER: 'app'
+#          POSTGRES_PASSWORD: '123qwe'
         ports:
           - 5432:5432
         options: >-
@@ -36,11 +36,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version:  ${{ matrix.python-version }}
-#    - name: Setup database
-#      run: |
-#        docker exec -i -e 123qwe db bash <<-EOSQL
-#          createdb -U app app_test
-#        EOSQL
+    - name: Setup database
+      run: |
+        docker exec -it db bash
+        psql
+        CREATE DATABASE mydb;
     - name: Install dependencies
       id: dependencies
       if: always()
