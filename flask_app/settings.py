@@ -13,7 +13,7 @@ load_dotenv(dotenv_path=os.path.join(BASE_DIR, "../.env"), override=True)
 
 
 class Settings(BaseSettings):
-    REDIS_HOST: str = Field(env="REDIS_HOST", default='redis')
+    REDIS_HOST: str = Field(env="REDIS_HOST", default='localhost')
     REDIS_PORT: int = Field(env="REDIS_PORT", default=6379)
     REDIS_PROTOCOL: str = Field(env="REDIS_PROTOCOL", default='redis')
     POSTGRES_PASSWORD: str = Field(env="POSTGRES_PASSWORD", default='123qwe')
