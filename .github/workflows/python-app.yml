@@ -16,7 +16,8 @@ jobs:
     services:
       db:
         image: postgres:12.4
-#        env:
+        env:
+          POSTGRES_HOST_AUTH_METHOD=trust
 #          POSTGRES_DB: 'auth_test'
 #          POSTGRES_USER: 'app'
 #          POSTGRES_PASSWORD: '123qwe'
