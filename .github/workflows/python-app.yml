@@ -130,8 +130,8 @@ jobs:
             passphrase: sova040888
             script: |
               sudo docker pull ${{ secrets.DOCKER_USERNAME }}/auth_sprint_2:latest
-              sudo docker-compose stop
-              sudo docker-compose rm auth_app
+#              sudo docker-compose stop
+#              sudo docker-compose rm auth_app
 #              rm .env
 #              # Создаст файл для переменных окружения
 #              touch .env
