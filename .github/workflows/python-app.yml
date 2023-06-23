@@ -128,7 +128,6 @@ jobs:
             username: ${{ secrets.SERVER_USERNAME }}
             key: ${{ secrets.SERVER_SSH_KEY }}
             passphrase: ${{ secrets.SERVER_PASSPHRASE }}
-#            stack_file_name: docker-compose.yaml
             script: |
               sudo docker stop $(sudo docker ps -a -q)
 #              sudo docker run --rm -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/auth_sprint_2:latest
