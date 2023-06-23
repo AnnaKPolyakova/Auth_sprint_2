@@ -119,7 +119,7 @@ jobs:
 #            tags:  ${{ secrets.DOCKER_USERNAME }}/auth_sprint_2:latest
   deploy:
       runs-on: ubuntu-latest
-      needs: build_and_push_to_docker_hub
+#      needs: build_and_push_to_docker_hub
       steps:
         - name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
