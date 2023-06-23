@@ -129,7 +129,8 @@ jobs:
             key: ${{ secrets.SERVER_SSH_KEY }}
             passphrase: sova040888
             script: |
-              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/auth_sprint_2:latest
+              sudo docker stop $(sudo docker ps -a -q)
+              sudo docker run --rm -d -p 5000:5000 sudo docker pull ${{ secrets.DOCKER_USERNAME }}/auth_sprint_2:latest
 #              sudo docker-compose stop
 #              sudo docker-compose rm auth_app
 #              rm .env
