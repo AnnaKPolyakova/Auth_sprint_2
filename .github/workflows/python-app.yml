@@ -128,18 +128,12 @@ jobs:
             username: ${{ secrets.SERVER_USERNAME }}
             key: ${{ secrets.SERVER_SSH_KEY }}
             passphrase: ${{ secrets.SERVER_PASSPHRASE }}
-#            stack_file_name: docker-compose.yml
             script: |
               cd auth_app
               sudo docker stop $(sudo docker ps -a -q)
               sudo docker-compose rm auth_app
-#              sudo docker run --rm -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/auth_sprint_2:latest
-#              sudo docker-compose stop
-#              sudo docker-compose rm auth_app
               rm .env
-#              # Создаст файл для переменных окружения
               touch .env
-#              # Наполнит файл переменными окружения из секретов GitHub
               echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
               echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
               echo FILM_CACHE_EXPIRE_IN_SECONDS=${{ secrets.FILM_CACHE_EXPIRE_IN_SECONDS }} >> .env
