@@ -131,7 +131,7 @@ jobs:
             script: |
               cd auth_app
               sudo docker stop $(sudo docker ps -a -q)
-              sudo docker-compose rm auth_app
+              sudo docker compose rm auth_app
               rm .env
               touch .env
               echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
@@ -160,4 +160,4 @@ jobs:
               echo AGENT_PORT=${{ secrets.AGENT_PORT }} >> .env
               echo TRACER_ON=${{ secrets.TRACER_ON }} >> .env
               echo DEFAULT_LIMITS=${{ secrets.DEFAULT_LIMITS }} >> .env
-              sudo docker-compose up -d
+              sudo docker compose up -d
