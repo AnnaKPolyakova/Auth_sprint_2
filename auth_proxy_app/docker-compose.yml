@@ -28,7 +28,6 @@ services:
       - .env
     command: gunicorn auth_proxy_app.wsgi_app:app --bind 0.0.0.0:8001 --reload
     depends_on:
-      - db
       - redis
     networks:
       - moves_network
@@ -46,7 +45,7 @@ services:
       - media_value:/var/html/media/
 
     depends_on:
-      - auth_app
+      - auth_proxy_app
       - redis
     networks:
       - moves_network
