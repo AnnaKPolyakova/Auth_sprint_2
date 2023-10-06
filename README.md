@@ -8,7 +8,7 @@ Technologies and requirements:
 ```
 Python 3.9+
 Flask
-```
+``` 
 
 ### Docker Settings
 
