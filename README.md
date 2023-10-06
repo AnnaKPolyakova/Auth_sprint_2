@@ -1,4 +1,4 @@
-# Sprint 6 project work
+# Sprint 7 project work
 
 Creates indexes person, genre and fills with data from the postgres database
 (run via db_updater.py in a separate container)
