@@ -1,96 +1,93 @@
-# Проектная работа 6 спринта
+# Sprint 6 project work
 
-Командная работа https://github.com/AnnaKPolyakova/Auth_sprint_1
+Creates indexes person, genre and fills with data from the postgres database
+(run via db_updater.py in a separate container)
+API for receiving data from es about films, persons, genres
 
-
-Создает индексы person, genre и заполняет данными из бд postgres
-(запуск через db_updater.py в отдельном контейнере)
-Апи для получения данных из es о фильмах, персонах, жанрах  
-
-Технологии и требования:
+Technologies and requirements:
 ```
 Python 3.9+
 Flask
-``` 
+```
 
-### Настройки Docker
+### Docker Settings
 
-##### Установка
+##### Installation
 
-* [Подробное руководство по установке](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+* [Detailed installation guide](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
-### Настройки Docker-compose
+### Docker-compose settings
 
-##### Установка
+##### Installation
 
-* [Подробное руководство по установке](https://docs.docker.com/compose/install/)
+* [Detailed Installation Guide](https://docs.docker.com/compose/install/)
 
-### Запуск приложения
+### Launch the application
 
-#### Перед запуском проекта создаем переменные окружения
-Создаем в корне .env и добавляем в него необходимые переменные  
-Пример в .env.example - для запуска приложения/тестов целиком в docker  
-Пример в .env.example-local - для запуска приложения/тестов локально и 
-частично в docker
+#### Before starting the project, create environment variables
+Create a .env in the root and add the necessary variables to it
+Example in .env.example - to run the entire application/tests in docker
+Example in .env.example-local - to run the application/tests locally and
+partially in docker
 
 #### Admin user
 
-#### Запуск проекта полностью в контейнерах docker
+#### Running a project entirely in docker containers
 
 * `docker-compose up --build`
 
-Для остановки контейнера:  
+To stop the container:
 * `docker-compose down --rmi all --volumes`
 
 
-Для создания is_superuser:  
+To create is_superuser:
 
 * `docker exec -it <id container> bash`
 * `cd flask_app/`
 * `flask is_superuser_create <login>`
 
-Будет создан суперюзер с одинаковыми логином и паролем 
+A superuser will be created with the same login and password
 
 
-#### Запуск проекта частично в контейнерах docker (redis и elastic)
+#### Running the project partially in docker containers (redis and elastic)
 
 * `docker-compose -f docker-compose-local.yml up --build`
 * `python -m flask_app.pywsgi`
 
-Документация по адресу:  
-http://127.0.0.1:5000/v1/doc/redoc/ or или  
-http://127.0.0.1:5000/v1/doc/swagger/  
+Documentation at:
+http://127.0.0.1:5000/v1/doc/redoc/ or or
+http://127.0.0.1:5000/v1/doc/swagger/
 
-Для остановки контейнера:  
+To stop the container:
 * `docker-compose -f docker-compose-local.yml down --rmi all --volumes`
 
-Для создания is_superuser: 
+To create is_superuser:
 
-* ` cd flask_app/`
+* `cd flask_app/`
 * ` python -m flask is_superuser_create <login>`
 
-Будет создан суперюзер с одинаковыми логином и паролем 
+A superuser will be created with the same login and password
 
-### Тестирование  
+### Testing
 
-Создаем в папке tests/functional файл с названием .env_test и добавляем в него 
-необходимые переменные  
-Пример в .env_test.example - для запуска тестов целиком в docker  
-Пример в .env_test.example - local - для запуска тестов локально и 
-частично в docker
+Create a file called .env_test in the tests/functional folder and add it to it
+necessary variables
+Example in .env_test.example - to run entire tests in docker
+Example in .env_test.example - local - to run tests locally and
+partially in docker
 
 
-#### Запуск тестов в контейнере docker  
+#### Running tests in a docker container
 
 * `docker-compose -f tests/functional/docker-compose-test.yml up --build`
 
-Для остановки контейнера: 
+To stop the container:
 * `docker-compose -f tests/functional/docker-compose-test.yml down --rmi all`
 
-#### Запуск тестов частично в контейнере docker  
+#### Running tests partially in a docker container
 
 * `docker-compose -f tests/functional/docker-compose-test-local.yml up --build`
 * `pytest tests/functional/src`
 
-Для остановки контейнера: 
+To stop the container:
 * `docker-compose -f tests/functional/docker-compose-test-local.yml down --rmi all`
